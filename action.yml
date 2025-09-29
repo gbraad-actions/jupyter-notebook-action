@@ -1,0 +1,23 @@
+name: "Execute Jupyter Notebook"
+description: "Execute Jupyter Notebook on the runner"
+author: "Gerard Braad <me@gbraad.nl>"
+inputs:
+  notebook:
+    description: "Path to the Jupyter Notebook file to execute"
+    required: true
+    default: "notebook.ipynb"
+runs:
+  using: "composite"
+  steps:
+    - name: Ensure IPython is installed (user install)
+      run: |
+        set -e
+        if ! command -v ipython >/dev/null 2>&1; then
+          echo "IPython not found, installing..."
+          pip install --user ipython
+        fi
+      shell: bash
+    - name: Execute notebook using IPython
+      run: |
+        ipython -c "%run ${{ inputs.notebook }}"
+      shell: bash
